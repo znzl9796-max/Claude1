@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>클로드 리워드</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',sans-serif;background:#f4f5f7;color:#1a1a1a;font-size:13px}
+
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* Sidebar */
+.sidebar{width:200px;background:#fff;border-right:1px solid #e8e8e8;display:flex;flex-direction:column;flex-shrink:0}
+.logo-wrap{padding:18px 16px 14px;border-bottom:1px solid #f0f0f0}
+.logo-name{font-size:20px;font-weight:700;color:#111;letter-spacing:-1px}
+.logo-dot{color:#16a34a}
+.logo-sub{font-size:10px;color:#bbb;margin-top:2px}
+.nav-section{padding:14px 16px 4px;font-size:9px;color:#ddd;letter-spacing:1px;font-weight:500;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 16px;font-size:13px;color:#666;cursor:pointer;border-left:2px solid transparent;transition:all .12s;user-select:none}
+.nav-item i{font-size:15px;width:17px;text-align:center;flex-shrink:0}
+.nav-item:hover{background:#f8f8f8;color:#111}
+.nav-item.active{color:#16a34a;border-left-color:#16a34a;background:#f0fdf4;font-weight:500}
+.dev-badge{font-size:8px;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:3px;padding:0 4px;margin-left:auto}
+.sidebar-bottom{margin-top:auto;border-top:1px solid #f0f0f0;padding:14px 16px}
+.user-card{background:#f9fafb;border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.user-card-name{font-size:12px;font-weight:700;color:#111}
+.user-card-grade{display:inline-block;margin-top:3px;font-size:10px;padding:1px 7px;border-radius:3px;font-weight:600}
+.grade-총판{background:#eff6ff;color:#2563eb}
+.grade-대행사{background:#fff7ed;color:#c2410c}
+.grade-개발사{background:#dcfce7;color:#15803d}
+.user-card-id{font-size:10px;color:#bbb;margin-top:2px}
+.logout-btn{width:100%;padding:7px;border:1px solid #eee;border-radius:7px;background:none;font-size:11px;color:#aaa;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;font-family:inherit;transition:all .12s}
+.logout-btn:hover{background:#fef2f2;color:#dc2626;border-color:#fecaca}
+
+/* Main */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{background:#fff;border-bottom:1px solid #e8e8e8;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.page-title{font-size:15px;font-weight:700;color:#111}
+.page-sub{font-size:11px;color:#bbb;margin-top:2px}
+.content{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:16px}
+
+/* Buttons */
+.btn{padding:7px 14px;border-radius:7px;font-size:12px;cursor:pointer;border:1px solid #e0e0e0;background:#fff;color:#333;transition:all .12s;font-family:inherit;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.btn:hover{background:#f5f5f5}
+.btn-primary{background:#16a34a;color:#fff;border-color:#16a34a;font-weight:600}
+.btn-primary:hover{background:#15803d}
+.btn-danger{background:#fef2f2;color:#dc2626;border-color:#fecaca}
+.btn-danger:hover{background:#fee2e2}
+.btn-warn{background:#fffbeb;color:#d97706;border-color:#fde68a}
+.btn-blue{background:#eff6ff;color:#2563eb;border-color:#bfdbfe}
+.btn-blue:hover{background:#dbeafe}
+.btn-sm{padding:4px 10px;font-size:11px;border-radius:5px}
+.btn-ghost{background:none;border:none;color:#aaa;padding:4px 6px;cursor:pointer}
+.btn-ghost:hover{color:#333;background:#f5f5f5}
+
+/* Stats */
+.stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.stat-card{background:#fff;border:1px solid #eee;border-radius:10px;padding:14px 16px}
+.stat-label{font-size:10px;color:#bbb;margin-bottom:5px}
+.stat-val{font-size:23px;font-weight:700;color:#111}
+.stat-sub{font-size:10px;color:#ccc;margin-top:3px}
+
+/* Table */
+.table-wrap{background:#fff;border:1px solid #eee;border-radius:10px;overflow:hidden}
+.table-header{padding:12px 16px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{padding:9px 12px;background:#fafafa;color:#aaa;font-weight:500;text-align:left;border-bottom:1px solid #f0f0f0;font-size:11px;white-space:nowrap}
+.tbl td{padding:9px 12px;border-bottom:1px solid #f7f7f7;color:#333;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr:hover td{background:#fafffc}
+.tbl-actions{display:flex;gap:4px}
+
+/* Badge */
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}
+.b-ok{background:#dcfce7;color:#15803d}
+.b-err{background:#fee2e2;color:#b91c1c}
+.b-wait{background:#fef9c3;color:#854d0e}
+.b-gray{background:#f3f4f6;color:#6b7280}
+.b-end{background:#f3f4f6;color:#9ca3af}
+.b-blue{background:#eff6ff;color:#1d4ed8}
+.b-orange{background:#fff7ed;color:#c2410c}
+
+/* Forms */
+.form-input{padding:8px 11px;border:1px solid #e0e0e0;border-radius:7px;font-size:12px;color:#333;background:#fff;font-family:inherit;outline:none;transition:border .12s;width:100%}
+.form-input:focus{border-color:#16a34a;box-shadow:0 0 0 2px rgba(22,163,74,.08)}
+.form-select{padding:8px 11px;border:1px solid #e0e0e0;border-radius:7px;font-size:12px;color:#333;background:#fff;font-family:inherit;outline:none;cursor:pointer;width:100%}
+.form-select:focus{border-color:#16a34a}
+.form-textarea{padding:8px 11px;border:1px solid #e0e0e0;border-radius:7px;font-size:12px;color:#333;font-family:inherit;outline:none;resize:vertical;width:100%}
+.form-textarea:focus{border-color:#16a34a}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:11px;color:#777;margin-bottom:4px;font-weight:500}
+
+/* Tabs */
+.tabs{display:flex}
+.tab{padding:6px 14px;font-size:12px;cursor:pointer;color:#aaa;border-bottom:2px solid transparent;transition:all .12s;user-select:none}
+.tab.active{color:#16a34a;border-bottom-color:#16a34a;font-weight:600}
+.tab:hover:not(.active){color:#333}
+
+/* Notice */
+.notice-card{background:#fff;border:1px solid #eee;border-radius:10px;padding:14px 18px;display:flex;align-items:flex-start;gap:12px;transition:box-shadow .12s}
+.notice-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.notice-pin{width:4px;min-height:40px;border-radius:2px;flex-shrink:0;margin-top:2px}
+.notice-title{font-size:13px;font-weight:600;color:#111;margin-bottom:3px}
+.notice-meta{font-size:11px;color:#bbb}
+.notice-content{font-size:12px;color:#666;margin-top:8px;line-height:1.6;display:none}
+.notice-card.open .notice-content{display:block}
+.notice-chip{font-size:10px;padding:1px 6px;border-radius:3px;font-weight:600;margin-left:6px}
+.chip-pin{background:#dcfce7;color:#15803d}
+.chip-urgent{background:#fef9c3;color:#854d0e}
+
+/* Info box */
+.info-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 16px;display:flex;gap:10px;align-items:flex-start}
+.info-box i{color:#16a34a;font-size:16px;flex-shrink:0;margin-top:1px}
+.info-box-text{font-size:12px;color:#15803d;line-height:1.6}
+.info-box-text strong{font-weight:700}
+
+/* Close banner */
+.close-banner{background:#fff;border:1px solid #eee;border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+.close-dot{width:8px;height:8px;border-radius:50%;background:#16a34a;flex-shrink:0;box-shadow:0 0 6px rgba(22,163,74,.5)}
+.close-dot.closed{background:#dc2626;box-shadow:0 0 6px rgba(220,38,38,.5)}
+
+/* Rank link box */
+.rank-link-box{display:flex;gap:6px;align-items:center}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:12px;width:460px;max-width:95vw;box-shadow:0 12px 40px rgba(0,0,0,.15)}
+.modal-header{padding:16px 20px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:14px;font-weight:700;color:#111;display:flex;align-items:center;gap:7px}
+.modal-body{padding:20px}
+.modal-footer{padding:12px 20px;border-top:1px solid #f0f0f0;display:flex;justify-content:flex-end;gap:8px}
+
+/* Login */
+.login-screen{position:fixed;inset:0;background:linear-gradient(135deg,#f0fdf4,#dcfce7 60%,#f0fdf4);display:flex;align-items:center;justify-content:center;z-index:200}
+.login-box{background:#fff;border-radius:16px;padding:40px 36px;width:380px;box-shadow:0 8px 48px rgba(0,0,0,.12)}
+.login-logo{text-align:center;margin-bottom:32px}
+.login-logo-name{font-size:32px;font-weight:700;color:#111;letter-spacing:-2px}
+.login-logo-dot{color:#16a34a}
+.login-logo-sub{font-size:12px;color:#bbb;margin-top:4px}
+.login-error{background:#fef2f2;border:1px solid #fecaca;border-radius:7px;padding:9px 13px;font-size:12px;color:#dc2626;margin-bottom:12px;display:none;align-items:center;gap:6px}
+.login-hint{margin-top:16px;font-size:10px;color:#ccc;text-align:center;line-height:1.7}
+
+/* Empty */
+.empty-state{text-align:center;padding:40px;color:#ccc}
+.empty-state i{font-size:34px;display:block;margin-bottom:8px;color:#e5e7eb}
+.empty-state p{font-size:12px}
+.empty-sub{font-size:11px;margin-top:4px;color:#d1d5db}
+
+/* Pagination */
+.pg-btn{width:26px;height:26px;border:1px solid #e5e7eb;border-radius:5px;background:#fff;cursor:pointer;color:#666;font-size:11px;display:inline-flex;align-items:center;justify-content:center;font-family:inherit}
+.pg-btn.active{background:#16a34a;color:#fff;border-color:#16a34a;font-weight:600}
+
+/* Toast */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;opacity:0;transition:opacity .2s;pointer-events:none;z-index:999;white-space:nowrap}
+#toast.show{opacity:1}
+
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#e5e7eb;border-radius:4px}
+</style>
+</head>
+<body>
+
+<!-- ========== LOGIN ========== -->
+<div class="login-screen" id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-name">클로드<span class="login-logo-dot">.</span></div>
+      <div class="login-logo-sub">리워드 서비스</div>
+    </div>
+    <div class="login-error" id="login-error"><i class="ti ti-alert-circle"></i> 아이디 또는 비밀번호를 확인해주세요</div>
+    <div class="form-group">
+      <label>아이디</label>
+      <input class="form-input" id="login-id" placeholder="아이디 입력" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="form-group" style="margin-bottom:20px">
+      <label>비밀번호</label>
+      <input class="form-input" id="login-pw" type="password" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:11px;font-size:14px" onclick="doLogin()">로그인</button>
+    <div class="login-hint">클로드 리워드 · 가입 문의: 카카오톡 khj6546</div>
+  </div>
+</div>
+
+<!-- ========== APP ========== -->
+<div class="app" id="app" style="display:none">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo-wrap">
+      <div class="logo-name">클로드<span class="logo-dot">.</span></div>
+      <div class="logo-sub" id="logo-sub">리워드 서비스</div>
+    </div>
+
+    <!-- 사용자 메뉴 -->
+    <div id="menu-user">
+      <div class="nav-section">메뉴</div>
+      <div class="nav-item" id="nav-notice" onclick="showTab('notice')"><i class="ti ti-bell"></i> 공지사항</div>
+      <div class="nav-item active" id="nav-home" onclick="showTab('home')"><i class="ti ti-dashboard"></i> 대시보드</div>
+      <div class="nav-item" id="nav-slots" onclick="showTab('slots')"><i class="ti ti-speakerphone"></i> 광고관리</div>
+      <div class="nav-item" id="nav-apply" onclick="showTab('apply')"><i class="ti ti-plus"></i> 슬롯 세팅</div>
+      <div class="nav-item" id="nav-rank" onclick="showTab('rank')"><i class="ti ti-chart-bar"></i> 순위 조회</div>
+      <div class="nav-section">서비스 안내</div>
+      <div class="nav-item" id="nav-cs" onclick="showTab('cs')"><i class="ti ti-message-circle"></i> 문의하기</div>
+    </div>
+
+    <!-- 개발사(어드민) 메뉴 -->
+    <div id="menu-admin" style="display:none">
+      <div class="nav-section">관리</div>
+      <div class="nav-item active" id="nav-adm-dash" onclick="showAdmTab('adm-dash')"><i class="ti ti-dashboard"></i> 대시보드</div>
+      <div class="nav-item" id="nav-adm-slots" onclick="showAdmTab('adm-slots')"><i class="ti ti-speakerphone"></i> 광고 슬롯 관리</div>
+      <div class="nav-item" id="nav-adm-accounts" onclick="showAdmTab('adm-accounts')"><i class="ti ti-users"></i> 계정 관리</div>
+      <div class="nav-item" id="nav-adm-notices" onclick="showAdmTab('adm-notices')"><i class="ti ti-bell"></i> 공지사항 관리</div>
+      <div class="nav-item" id="nav-adm-logs" onclick="showAdmTab('adm-logs')"><i class="ti ti-list-details"></i> 로그 관리</div>
+      <div class="nav-item" id="nav-adm-rank" onclick="showAdmTab('adm-rank')"><i class="ti ti-chart-bar"></i> 순위 조회</div>
+      <div class="nav-section">시스템</div>
+      <div class="nav-item" id="nav-adm-setting" onclick="showAdmTab('adm-setting')"><i class="ti ti-settings"></i> 리워드 설정<span class="dev-badge">DEV</span></div>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="user-card">
+        <div class="user-card-name" id="sb-name">-</div>
+        <span class="user-card-grade" id="sb-grade-badge">-</span>
+        <div class="user-card-id" id="sb-id">-</div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()"><i class="ti ti-logout" style="font-size:13px"></i> 로그아웃</button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- ============================================================
+         사용자 뷰
+    ============================================================ -->
+
+    <!-- 홈 -->
+    <div id="tab-home" class="user-tab">
+      <div class="topbar">
+        <div><div class="page-title" id="home-greeting">안녕하세요</div><div class="page-sub">클로드 리워드 현황입니다</div></div>
+        <div id="home-close-status" style="font-size:12px;display:flex;align-items:center;gap:6px"></div>
+      </div>
+      <div class="content">
+        <div class="stat-row" style="grid-template-columns:repeat(4,1fr)">
+          <div class="stat-card"><div class="stat-label">내 전체 슬롯</div><div class="stat-val" id="h-total">0</div><div class="stat-sub">등록됨</div></div>
+          <div class="stat-card"><div class="stat-label" style="color:#16a34a">구동 중</div><div class="stat-val" id="h-ok" style="color:#16a34a">0</div><div class="stat-sub">정상 작동</div></div>
+          <div class="stat-card"><div class="stat-label" style="color:#dc2626">오류</div><div class="stat-val" id="h-err" style="color:#dc2626">0</div><div class="stat-sub">확인 필요</div></div>
+          <div class="stat-card"><div class="stat-label" style="color:#9ca3af">마감 예정</div><div class="stat-val" id="h-end" style="color:#9ca3af">0</div><div class="stat-sub">오늘 종료</div></div>
+        </div>
+        <div class="close-banner">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="close-dot" id="close-dot"></div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:#111" id="close-status-text">-</div>
+              <div style="font-size:11px;color:#bbb;margin-top:1px">접수 가능 시간: 00:00 ~ <span id="banner-close-time">18:00</span></div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="showTab('apply')" id="apply-quick-btn">슬롯 세팅 →</button>
+        </div>
+        <div class="info-box" id="err-box" style="display:none;border-color:#fecaca;background:#fef2f2">
+          <i class="ti ti-alert-circle" style="color:#dc2626"></i>
+          <div class="info-box-text" style="color:#b91c1c">오류 슬롯이 <strong id="err-count">0</strong>개 있습니다. <span style="cursor:pointer;text-decoration:underline" onclick="showTab('slots')">확인하기 →</span></div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-header" style="justify-content:space-between">
+            <span style="font-size:13px;font-weight:600;color:#111">최근 슬롯</span>
+            <button class="btn btn-sm" onclick="showTab('slots')">전체 보기 →</button>
+          </div>
+          <table class="tbl">
+            <thead><tr><th>키워드</th><th style="width:82px">상품 MID</th><th style="width:52px">상태</th><th style="width:56px">유입량</th><th style="width:50px">일수</th><th style="width:76px">종료일</th><th style="width:90px">순위</th></tr></thead>
+            <tbody id="home-slot-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 광고관리 -->
+    <div id="tab-slots" class="user-tab" style="display:none">
+      <div class="topbar">
+        <div><div class="page-title">광고관리</div><div class="page-sub">등록된 슬롯 현황 · 유입량 100 단위 자유 설정</div></div>
+        <div id="slot-page-btn-wrap"><button class="btn btn-primary" onclick="showTab('apply')"><i class="ti ti-plus"></i> 슬롯 세팅</button></div>
+      </div>
+      <div class="content">
+        <div class="table-wrap">
+          <div class="table-header">
+            <div class="tabs" id="slot-tabs">
+              <div class="tab active" onclick="filterMySlots('전체',this)">전체</div>
+              <div class="tab" onclick="filterMySlots('정상',this)">정상</div>
+              <div class="tab" onclick="filterMySlots('오류',this)">오류</div>
+              <div class="tab" onclick="filterMySlots('대기',this)">대기</div>
+              <div class="tab" onclick="filterMySlots('마감예정',this)">마감예정</div>
+            </div>
+            <div style="margin-left:auto"><input class="form-input" id="slot-search" placeholder="키워드·MID 검색" style="width:180px" oninput="renderMySlots()"></div>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="tbl"><thead id="my-slot-thead"></thead><tbody id="my-slot-tbody"></tbody></table>
+          </div>
+          <div style="padding:10px 16px;border-top:1px solid #f0f0f0;display:flex;justify-content:flex-end"><div id="my-slot-pagination" style="display:flex;gap:3px"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 슬롯 세팅 -->
+    <div id="tab-apply" class="user-tab" style="display:none">
+      <div class="topbar"><div><div class="page-title">슬롯 세팅</div><div class="page-sub">새 리워드 슬롯을 직접 등록합니다</div></div></div>
+      <div class="content">
+        <div id="apply-closed-banner" style="display:none" class="info-box">
+          <i class="ti ti-clock" style="color:#dc2626"></i>
+          <div class="info-box-text" style="color:#b91c1c">접수 마감 시간이 지났습니다. 내일 <strong>00:00</strong>부터 신청 가능합니다.</div>
+        </div>
+        <div class="info-box">
+          <i class="ti ti-info-circle"></i>
+          <div class="info-box-text">유입량 <strong>100 단위</strong>로 자유 설정 (100·200·300·400·500…) · 작업일수 <strong>1~30일</strong> · 접수 <strong>00:00 ~ <span id="apply-close-time">18:00</span></strong></div>
+        </div>
+        <div class="table-wrap">
+          <div style="padding:16px 20px">
+            <div style="font-size:14px;font-weight:700;color:#111;margin-bottom:16px">신청 정보 입력</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <div class="form-group"><label>키워드 *</label><input class="form-input" id="apply-kw" placeholder="타겟 키워드"></div>
+              <div class="form-group"><label>상품 MID *</label><input class="form-input" id="apply-mid" placeholder="네이버 쇼핑 상품 MID"></div>
+              <div class="form-group" style="grid-column:span 2"><label>상품 링크 *</label><input class="form-input" id="apply-link" placeholder="https://smartstore.naver.com/... 또는 상품 URL"></div>
+              <div class="form-group"><label>유입량 <span style="color:#bbb;font-weight:400">(100 단위)</span></label><input class="form-input" id="apply-inflow" type="number" value="100" min="100" step="100" placeholder="100 / 200 / 300 ..."></div>
+              <div class="form-group"><label>작업일수 <span style="color:#bbb;font-weight:400">(1~30일)</span></label><input class="form-input" id="apply-days" type="number" value="10" min="1" max="30"></div>
+              <div class="form-group"><label>가격비교 MID <span style="color:#bbb;font-weight:400">(선택)</span></label><input class="form-input" id="apply-cmid" placeholder="가격비교 MID"></div>
+              <div class="form-group"><label>가격비교</label><select class="form-select" id="apply-price"><option value="N">미사용</option><option value="Y">사용</option></select></div>
+            </div>
+            <div style="margin-top:8px;padding:12px 14px;background:#f9fafb;border-radius:8px;font-size:12px;color:#888;line-height:1.7">MID 확인: 네이버 쇼핑 상품 클릭 → URL의 <code style="background:#eee;padding:1px 5px;border-radius:3px">nvMid=</code> 뒤 숫자</div>
+            <div style="margin-top:16px;display:flex;justify-content:flex-end;gap:8px">
+              <button class="btn" onclick="clearApplyForm()">초기화</button>
+              <button class="btn btn-primary" onclick="submitApply()"><i class="ti ti-check"></i> 슬롯 세팅 완료</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 순위 조회 (사용자) -->
+    <div id="tab-rank" class="user-tab" style="display:none">
+      <div class="topbar"><div><div class="page-title">순위 조회</div><div class="page-sub">네이버 쇼핑 검색 결과에서 내 상품 위치 확인</div></div></div>
+      <div class="content">
+        <div class="table-wrap">
+          <div style="padding:16px 20px">
+            <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:12px">키워드 검색</div>
+            <div style="display:flex;gap:8px"><input class="form-input" id="rank-kw" placeholder="순위 확인할 키워드 입력" onkeydown="if(event.key==='Enter')openRankSearch()" style="max-width:340px"><button class="btn btn-primary" onclick="openRankSearch()"><i class="ti ti-external-link"></i> 네이버 쇼핑 검색 열기</button></div>
+            <div style="margin-top:10px;font-size:11px;color:#aaa"><i class="ti ti-info-circle" style="font-size:12px"></i> search.shopping.naver.com 검색 결과가 새 탭으로 열립니다. 아래 표에서 "키워드+상품 동시 열기"를 누르면 검색 결과와 내 상품 페이지가 같이 열려 순위 대조가 쉽습니다.</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-header"><span style="font-size:13px;font-weight:600;color:#111">광고 슬롯 순위 확인</span></div>
+          <table class="tbl">
+            <thead><tr><th style="width:44px">번호</th><th>키워드</th><th style="width:88px">상품 MID</th><th style="width:52px">상태</th><th style="width:78px">종료일</th><th style="width:200px">순위 확인</th></tr></thead>
+            <tbody id="rank-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 공지사항 (사용자) -->
+    <div id="tab-notice" class="user-tab" style="display:none">
+      <div class="topbar"><div><div class="page-title">공지사항</div><div class="page-sub">클로드 리워드 공지 및 안내</div></div></div>
+      <div class="content"><div id="notice-list" style="display:flex;flex-direction:column;gap:8px"></div></div>
+    </div>
+
+    <!-- 문의하기 -->
+    <div id="tab-cs" class="user-tab" style="display:none">
+      <div class="topbar"><div><div class="page-title">문의하기</div><div class="page-sub">오류 및 기타 문의</div></div></div>
+      <div class="content">
+        <div class="table-wrap">
+          <div style="padding:20px">
+            <div style="font-size:13px;font-weight:700;color:#111;margin-bottom:16px">문의 접수</div>
+            <div class="form-group"><label>문의 유형</label><select class="form-select"><option>슬롯 오류</option><option>슬롯 연장 요청</option><option>결제/정산 문의</option><option>기타</option></select></div>
+            <div class="form-group"><label>문의 내용 *</label><textarea class="form-textarea" id="cs-content" rows="5" placeholder="문의 내용을 입력해주세요"></textarea></div>
+            <div style="display:flex;justify-content:flex-end"><button class="btn btn-primary" onclick="submitCS()"><i class="ti ti-send"></i> 문의 접수</button></div>
+          </div>
+        </div>
+        <div class="info-box"><i class="ti ti-brand-hipchat"></i><div class="info-box-text">빠른 답변은 카카오톡 <strong>khj6546</strong>으로 문의해주세요. 운영시간 평일 09:00~18:00</div></div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         개발사(어드민) 뷰
+    ============================================================ -->
+
+    <!-- 대시보드 -->
+    <div id="tab-adm-dash" class="adm-tab" style="display:none">
+      <div class="topbar"><div><div class="page-title">대시보드</div><div class="page-sub">클로드 리워드 전체 현황</div></div></div>
+      <div class="content">
+        <div class="stat-row">
+          <div class="stat-card"><div class="stat-label">전체 슬롯</div><div class="stat-val" id="d-slots">0</div></div>
+          <div class="stat-card"><div class="stat-label" style="color:#16a34a">정상</div><div class="stat-val" id="d-ok" style="color:#16a34a">0</div></div>
+          <div class="stat-card"><div class="stat-label" style="color:#dc2626">오류</div><div class="stat-val" id="d-err" style="color:#dc2626">0</div></div>
+          <div class="stat-card"><div class="stat-label" style="color:#2563eb">계정</div><div class="stat-val" id="d-accs" style="color:#2563eb">0</div></div>
+          <div class="stat-card"><div class="stat-label" style="color:#d97706">접수 마감</div><div class="stat-val" id="d-close" style="color:#d97706;font-size:17px">18:00</div></div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-header" style="justify-content:space-between"><span style="font-size:13px;font-weight:600;color:#111">최근 슬롯</span><button class="btn btn-sm" onclick="showAdmTab('adm-slots')">전체 →</button></div>
+          <table class="tbl"><thead><tr><th style="width:44px">번호</th><th style="width:90px">회원</th><th>키워드</th><th style="width:86px">MID</th><th style="width:52px">상태</th><th style="width:76px">종료일</th></tr></thead><tbody id="d-slot-tbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 광고 슬롯 관리 -->
+    <div id="tab-adm-slots" class="adm-tab" style="display:none">
+      <div class="topbar"><div><div class="page-title">광고 슬롯 관리</div><div class="page-sub">전체 슬롯 조회·추가·수정·삭제</div></div>
+        <button class="btn btn-primary" onclick="openAdmSlotModal()"><i class="ti ti-plus"></i> 슬롯 추가</button>
+      </div>
+      <div class="content">
+        <div class="stat-row">
+          <div class="stat-card"><div class="stat-label">전체</div><div class="stat-val" id="as-total">0</div></div>
+          <div class="stat-card"><div class="stat-label" style="color:#16a34a">정상</div><div class="stat-val" id="as-ok" style="color:#16a34a">0</div></div>
+          <div class="stat-card"><div class="stat-label" style="color:#dc2626">오류</div><div class="stat-val" id="as-err" style="color:#dc2626">0</div></div>
+          <div class="stat-card"><div class="stat-label" style="color:#d97706">대기</div><div class="stat-val" id="as-wait" style="color:#d97706">0</div></div>
+          <div class="stat-card"><div class="stat-label" style="color:#9ca3af">마감예정</div><div class="stat-val" id="as-end" style="color:#9ca3af">0</div></div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-header">
+            <div class="tabs" id="as-tabs">
+              <div class="tab active" onclick="asFilter('전체',this)">전체</div>
+              <div class="tab" onclick="asFilter('정상',this)">정상</div>
+              <div class="tab" onclick="asFilter('오류',this)">오류</div>
+              <div class="tab" onclick="asFilter('대기',this)">대기</div>
+              <div class="tab" onclick="asFilter('마감예정',this)">마감예정</div>
+            </div>
+            <div style="margin-left:auto"><input class="form-input" id="as-search" placeholder="키워드·MID·회원 검색" style="width:200px" oninput="renderAdmSlots()"></div>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="tbl"><thead><tr>
+              <th style="width:34px"><input type="checkbox" id="chk-all" onchange="toggleAllAdmSlots(this)"></th>
+              <th style="width:44px">번호</th><th style="width:82px">회원</th><th style="width:52px">상태</th>
+              <th style="width:100px">키워드</th><th style="width:86px">MID</th><th style="width:54px">링크</th>
+              <th style="width:56px">유입량</th><th style="width:48px">일수</th><th style="width:74px">종료일</th><th style="width:90px">관리</th>
+            </tr></thead><tbody id="adm-slot-tbody"></tbody></table>
+          </div>
+          <div style="padding:10px 16px;border-top:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;gap:6px"><button class="btn btn-sm btn-warn" onclick="bulkStatus()">상태 변경</button><button class="btn btn-sm btn-danger" onclick="bulkDeleteAdm()">삭제</button></div>
+            <div id="as-pagination" style="display:flex;gap:3px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 계정 관리 -->
+    <div id="tab-adm-accounts" class="adm-tab" style="display:none">
+      <div class="topbar"><div><div class="page-title">계정 관리</div><div class="page-sub">회원 계정 생성·중단·삭제</div></div>
+        <button class="btn btn-primary" onclick="openAddAccModal()"><i class="ti ti-user-plus"></i> 계정 생성</button>
+      </div>
+      <div class="content">
+        <div class="table-wrap">
+          <div class="table-header">
+            <input class="form-input" id="acc-search" placeholder="아이디·이름 검색" style="width:180px" oninput="renderAccounts()">
+            <select class="form-select" id="acc-grade-f" onchange="renderAccounts()" style="width:110px"><option value="">전체 등급</option><option value="개발사">개발사</option><option value="총판">총판</option><option value="대행사">대행사</option><option value="일반">일반</option></select>
+            <select class="form-select" id="acc-status-f" onchange="renderAccounts()" style="width:100px"><option value="">전체 상태</option><option value="정상">정상</option><option value="중단">중단</option></select>
+          </div>
+          <table class="tbl"><thead><tr><th style="width:34px"><input type="checkbox"></th><th style="width:44px">번호</th><th style="width:100px">아이디</th><th style="width:90px">이름</th><th style="width:64px">등급</th><th style="width:54px">상태</th><th style="width:70px">슬롯</th><th style="width:80px">가입일</th><th>관리</th></tr></thead><tbody id="adm-acc-tbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 공지사항 관리 -->
+    <div id="tab-adm-notices" class="adm-tab" style="display:none">
+      <div class="topbar"><div><div class="page-title">공지사항 관리</div><div class="page-sub">공지 작성·삭제</div></div>
+        <button class="btn btn-primary" onclick="openAddNoticeModal()"><i class="ti ti-plus"></i> 공지 작성</button>
+      </div>
+      <div class="content">
+        <div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.5px">고정 공지</div>
+        <div id="adm-pinned-notices" style="display:flex;flex-direction:column;gap:7px"></div>
+        <div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-top:6px">일반 공지</div>
+        <div id="adm-normal-notices" style="display:flex;flex-direction:column;gap:7px"></div>
+      </div>
+    </div>
+
+    <!-- 로그 관리 -->
+    <div id="tab-adm-logs" class="adm-tab" style="display:none">
+      <div class="topbar"><div><div class="page-title">로그 관리</div><div class="page-sub">전체 작업 및 접속 이력</div></div>
+        <button class="btn" onclick="showToast('CSV 내보내기')"><i class="ti ti-download"></i> CSV</button>
+      </div>
+      <div class="content">
+        <div class="table-wrap">
+          <div class="table-header">
+            <select class="form-select" id="log-type-f" onchange="renderLogs()" style="width:110px"><option value="">전체 유형</option><option value="로그인">로그인</option><option value="슬롯생성">슬롯생성</option><option value="슬롯수정">슬롯수정</option><option value="슬롯삭제">슬롯삭제</option><option value="계정변경">계정변경</option></select>
+            <input class="form-input" id="log-search" placeholder="아이디 검색" style="width:150px" oninput="renderLogs()">
+          </div>
+          <table class="tbl"><thead><tr><th style="width:44px">번호</th><th style="width:100px">아이디</th><th style="width:80px">유형</th><th>내용</th><th style="width:128px">일시</th></tr></thead><tbody id="adm-log-tbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 순위 조회 (어드민) -->
+    <div id="tab-adm-rank" class="adm-tab" style="display:none">
+      <div class="topbar"><div><div class="page-title">순위 조회</div><div class="page-sub">전체 슬롯 순위 확인</div></div></div>
+      <div class="content">
+        <div class="table-wrap">
+          <div style="padding:16px 20px">
+            <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:12px">키워드 검색</div>
+            <div style="display:flex;gap:8px"><input class="form-input" id="adm-rank-kw" placeholder="키워드 입력" onkeydown="if(event.key==='Enter')openAdmRankSearch()" style="max-width:340px"><button class="btn btn-primary" onclick="openAdmRankSearch()"><i class="ti ti-external-link"></i> 네이버 쇼핑 검색 열기</button></div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-header"><span style="font-size:13px;font-weight:600;color:#111">전체 슬롯 순위 확인</span></div>
+          <table class="tbl"><thead><tr><th style="width:44px">번호</th><th style="width:82px">회원</th><th>키워드</th><th style="width:86px">MID</th><th style="width:52px">상태</th><th style="width:200px">순위 확인</th></tr></thead><tbody id="adm-rank-tbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 리워드 설정 -->
+    <div id="tab-adm-setting" class="adm-tab" style="display:none">
+      <div class="topbar"><div><div class="page-title">리워드 설정 <span class="dev-badge" style="font-size:10px;vertical-align:middle">DEV</span></div><div class="page-sub">기본값·마감시간 조정</div></div>
+        <button class="btn btn-primary" onclick="saveSetting()"><i class="ti ti-device-floppy"></i> 저장</button>
+      </div>
+      <div class="content">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="table-wrap" style="padding:16px 18px">
+            <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:12px">기본 설정</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f5f5f5"><span style="font-size:12px;color:#555">사이트명</span><input class="form-input" id="cfg-name" value="클로드" style="width:130px"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f5f5f5"><div><div style="font-size:12px;color:#555">기본 유입량</div><div style="font-size:10px;color:#bbb">신규 슬롯 기본값 · 100 단위</div></div><div style="display:flex;align-items:center;gap:5px"><input class="form-input" id="cfg-inflow" value="100" type="number" style="width:68px;text-align:right"><span style="color:#aaa;font-size:12px">유입</span></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f5f5f5"><span style="font-size:12px;color:#555">기본 작업일수</span><div style="display:flex;align-items:center;gap:5px"><input class="form-input" id="cfg-days" value="10" type="number" style="width:68px;text-align:right"><span style="color:#aaa;font-size:12px">일</span></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f5f5f5"><span style="font-size:12px;color:#555">접수 시작</span><input class="form-input" id="cfg-open" value="00:00" type="time" style="width:100px"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0"><div><div style="font-size:12px;color:#555">접수 마감</div><div style="font-size:10px;color:#bbb">자유롭게 조정 가능</div></div><input class="form-input" id="cfg-close" value="18:00" type="time" style="width:100px"></div>
+          </div>
+          <div class="table-wrap" style="padding:16px 18px">
+            <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:12px">알림 설정</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f5f5f5"><span style="font-size:12px;color:#555">오류 슬롯 알림</span><label style="font-size:12px;color:#16a34a;cursor:pointer"><input type="checkbox" checked> 활성</label></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f5f5f5"><span style="font-size:12px;color:#555">마감 예정 알림</span><label style="font-size:12px;color:#16a34a;cursor:pointer"><input type="checkbox" checked> 활성</label></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f5f5f5"><div><div style="font-size:12px;color:#555">신규 계정 알림</div><div style="font-size:10px;color:#bbb">항시 ON · khj6546</div></div><label style="font-size:12px;color:#16a34a"><input type="checkbox" checked disabled> 활성</label></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0"><span style="font-size:12px;color:#555">카카오 수신 계정</span><code style="color:#16a34a;font-family:monospace;font-size:12px;font-weight:600">khj6546</code></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== 슬롯 수정 Modal (사용자) ===== -->
+<div class="modal-overlay" id="modal-edit">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title"><i class="ti ti-edit"></i> 슬롯 수정</div><button class="btn-ghost" onclick="closeModal('modal-edit')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-id">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group"><label>키워드 *</label><input class="form-input" id="edit-kw"></div>
+        <div class="form-group"><label>상품 MID *</label><input class="form-input" id="edit-mid"></div>
+        <div class="form-group" style="grid-column:span 2"><label>상품 링크 *</label><input class="form-input" id="edit-link"></div>
+        <div class="form-group" id="edit-inflow-wrap"><label>유입량 (100 단위)</label><input class="form-input" id="edit-inflow" type="number" min="100" step="100"></div>
+        <div class="form-group" id="edit-days-wrap"><label>작업일수 (1~30)</label><input class="form-input" id="edit-days" type="number" min="1" max="30"></div>
+        <div class="form-group" id="edit-cmid-wrap"><label>가격비교 MID</label><input class="form-input" id="edit-cmid"></div>
+        <div class="form-group" id="edit-price-wrap"><label>가격비교</label><select class="form-select" id="edit-price"><option value="N">미사용</option><option value="Y">사용</option></select></div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modal-edit')">취소</button><button class="btn btn-primary" onclick="saveEdit()">수정 완료</button></div>
+  </div>
+</div>
+
+<!-- ===== 연장 Modal ===== -->
+<div class="modal-overlay" id="modal-extend">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title"><i class="ti ti-calendar-plus"></i> 슬롯 연장</div><button class="btn-ghost" onclick="closeModal('modal-extend')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body"><input type="hidden" id="extend-id"><div style="background:#f9fafb;border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:12px;color:#666" id="extend-info">-</div><div class="form-group"><label>연장 일수</label><input class="form-input" id="extend-days" type="number" value="10" min="1"></div></div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modal-extend')">취소</button><button class="btn btn-primary" onclick="confirmExtend()">연장 신청</button></div>
+  </div>
+</div>
+
+<!-- ===== 슬롯 추가 Modal (어드민) ===== -->
+<div class="modal-overlay" id="modal-adm-slot">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title"><i class="ti ti-plus"></i> 슬롯 추가</div><button class="btn-ghost" onclick="closeModal('modal-adm-slot')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group"><label>키워드 *</label><input class="form-input" id="as-kw"></div>
+        <div class="form-group"><label>상품 MID *</label><input class="form-input" id="as-mid"></div>
+        <div class="form-group"><label>가격비교 MID</label><input class="form-input" id="as-cmid" placeholder="선택"></div>
+        <div class="form-group" style="grid-column:span 2"><label>상품 링크 *</label><input class="form-input" id="as-link" placeholder="https://... 상품 URL"></div>
+        <div class="form-group"><label>유입량 (100 단위)</label><input class="form-input" id="as-inflow" value="100" type="number" min="100" step="100"></div>
+        <div class="form-group"><label>작업일수 (1~30)</label><input class="form-input" id="as-days" value="10" type="number" min="1" max="30"></div>
+        <div class="form-group"><label>가격비교</label><select class="form-select" id="as-price"><option value="N">미사용</option><option value="Y">사용</option></select></div>
+        <div class="form-group" style="grid-column:span 2"><label>초기 상태</label><select class="form-select" id="as-status"><option value="대기">대기</option><option value="정상">정상</option></select></div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modal-adm-slot')">취소</button><button class="btn btn-primary" onclick="addAdmSlot()">슬롯 추가</button></div>
+  </div>
+</div>
+
+<!-- ===== 슬롯 수정 Modal (어드민) ===== -->
+<div class="modal-overlay" id="modal-adm-edit">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title"><i class="ti ti-edit"></i> 슬롯 수정</div><button class="btn-ghost" onclick="closeModal('modal-adm-edit')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <input type="hidden" id="ae-id">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group"><label>키워드 *</label><input class="form-input" id="ae-kw"></div>
+        <div class="form-group"><label>상품 MID *</label><input class="form-input" id="ae-mid"></div>
+        <div class="form-group" style="grid-column:span 2"><label>상품 링크 *</label><input class="form-input" id="ae-link"></div>
+        <div class="form-group"><label>가격비교 MID</label><input class="form-input" id="ae-cmid"></div>
+        <div class="form-group"><label>가격비교</label><select class="form-select" id="ae-price"><option value="N">미사용</option><option value="Y">사용</option></select></div>
+        <div class="form-group"><label>유입량 (100 단위)</label><input class="form-input" id="ae-inflow" type="number" min="100" step="100"></div>
+        <div class="form-group"><label>작업일수 (1~30)</label><input class="form-input" id="ae-days" type="number" min="1" max="30"></div>
+        <div class="form-group" style="grid-column:span 2"><label>상태</label><select class="form-select" id="ae-status"><option value="정상">정상</option><option value="대기">대기</option><option value="오류">오류</option><option value="마감예정">마감예정</option></select></div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modal-adm-edit')">취소</button><button class="btn btn-primary" onclick="saveAdmEdit()">수정 완료</button></div>
+  </div>
+</div>
+
+<!-- ===== 계정 생성 Modal ===== -->
+<div class="modal-overlay" id="modal-add-acc">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title"><i class="ti ti-user-plus"></i> 계정 생성</div><button class="btn-ghost" onclick="closeModal('modal-add-acc')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="form-group"><label>아이디 *</label><input class="form-input" id="na-id"></div>
+      <div class="form-group"><label>비밀번호 *</label><input class="form-input" id="na-pw" type="password"></div>
+      <div class="form-group" style="grid-column:span 2"><label>이름 *</label><input class="form-input" id="na-name"></div>
+      <div class="form-group" style="grid-column:span 2"><label>등급</label><select class="form-select" id="na-grade"><option value="일반">일반</option><option value="대행사">대행사</option><option value="총판">총판</option><option value="개발사">개발사</option></select></div>
+    </div></div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modal-add-acc')">취소</button><button class="btn btn-primary" onclick="addAccount()">계정 생성</button></div>
+  </div>
+</div>
+
+<!-- ===== 공지 작성 Modal ===== -->
+<div class="modal-overlay" id="modal-add-notice">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title"><i class="ti ti-bell"></i> 공지 작성</div><button class="btn-ghost" onclick="closeModal('modal-add-notice')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>제목 *</label><input class="form-input" id="nn-title"></div>
+      <div class="form-group"><label>내용</label><textarea class="form-textarea" id="nn-content" rows="4"></textarea></div>
+      <div style="display:flex;gap:16px;margin-top:6px"><label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer"><input type="checkbox" id="nn-pin"> 상단 고정</label><label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer"><input type="checkbox" id="nn-urgent"> 긴급 공지</label></div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modal-add-notice')">취소</button><button class="btn btn-primary" onclick="addNotice()">게시</button></div>
+  </div>
+</div>
+
+
+<!-- ===== 등급 변경 Modal ===== -->
+<div class="modal-overlay" id="modal-grade">
+  <div class="modal" style="width:380px">
+    <div class="modal-header"><div class="modal-title"><i class="ti ti-arrows-exchange"></i> 등급 변경</div><button class="btn-ghost" onclick="closeModal('modal-grade')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <input type="hidden" id="gm-id">
+      <div style="background:#f9fafb;border-radius:8px;padding:12px 14px;margin-bottom:14px;font-size:12px;color:#666" id="gm-info">-</div>
+      <div class="form-group"><label>변경할 등급</label><select class="form-select" id="gm-grade"><option value="일반">일반</option><option value="대행사">대행사</option><option value="총판">총판</option><option value="개발사">개발사</option></select></div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modal-grade')">취소</button><button class="btn btn-primary" onclick="saveGrade()">변경</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ============================================================
+// 공유 데이터
+// ============================================================
+var USERS = {
+  'khj6546':     {pw:'1234', grade:'개발사', name:'총괄 khj6546'},
+  '총판테스트':   {pw:'1234', grade:'총판', name:'총판 홍길동'},
+  '대행사테스트': {pw:'1234', grade:'대행사', name:'대행사 김철수'},
+  '일반테스트':   {pw:'1234', grade:'일반', name:'일반 이영희'},
+};
+
+var SETTING = {close:'18:00', open:'00:00', inflow:100, days:10};
+
+var NOTICES = [
+  {id:1,title:'클로드 리워드 서비스 오픈 안내',content:'클로드 리워드 서비스를 정식 오픈합니다. 많은 이용 바랍니다.',pin:true,urgent:false,date:'2026.06.16'},
+  {id:2,title:'접수 시간 안내 — 매일 00:00 ~ 18:00 (오후 6시 마감)',content:'슬롯 접수는 매일 자정부터 오후 6시까지 가능합니다.',pin:true,urgent:true,date:'2026.06.16'},
+  {id:3,title:'유입량 안내 — 100 단위 자유 설정',content:'유입량은 100 단위로 자유롭게 설정 가능합니다 (100·200·300·400·500). 작업일수는 1~30일.',pin:false,urgent:false,date:'2026.06.16'},
+];
+
+// 전체 슬롯 (어드민용 = 전부 / 사용자 = 본인 것만 필터)
+var SLOTS = [
+  {id:1,user:'총판테스트',keyword:'써큘레이터',price:'Y',mid:'80123456789',cmid:'90112233445',link:'https://smartstore.naver.com/sample/products/80123456789',inflow:300,days:30,start:'2026.06.01',end:'2026.07.01',status:'정상'},
+  {id:2,user:'총판테스트',keyword:'선풍기',price:'N',mid:'80987654321',cmid:'',link:'https://smartstore.naver.com/sample/products/80987654321',inflow:100,days:10,start:'2026.06.10',end:'2026.06.20',status:'마감예정'},
+  {id:3,user:'대행사테스트',keyword:'공기청정기',price:'Y',mid:'80111222333',cmid:'90223344556',link:'https://smartstore.naver.com/sample/products/80111222333',inflow:200,days:10,start:'2026.05.15',end:'2026.06.24',status:'오류'},
+  {id:4,user:'일반테스트',keyword:'제습기',price:'Y',mid:'80777888999',cmid:'',link:'https://smartstore.naver.com/sample/products/80777888999',inflow:100,days:10,start:'2026.06.06',end:'2026.06.16',status:'정상'},
+  {id:5,user:'대행사테스트',keyword:'에어컨필터',price:'N',mid:'80444555666',cmid:'',link:'https://smartstore.naver.com/sample/products/80444555666',inflow:500,days:14,start:'2026.06.01',end:'2026.06.15',status:'대기'},
+];
+
+var ACCOUNTS = [
+  {id:1,user:'khj6546',name:'총괄',grade:'개발사',status:'정상',joined:'2026.01.01'},
+  {id:2,user:'총판테스트',name:'홍길동',grade:'총판',status:'정상',joined:'2026.01.10'},
+  {id:3,user:'대행사테스트',name:'김철수',grade:'대행사',status:'정상',joined:'2026.02.01'},
+  {id:4,user:'일반테스트',name:'이영희',grade:'일반',status:'정상',joined:'2026.03.05'},
+  {id:5,user:'user02',name:'박지수',grade:'일반',status:'중단',joined:'2026.04.12'},
+];
+
+var LOGS = [
+  {id:5,user:'khj6546',type:'로그인',msg:'개발사 계정 로그인',date:'2026.06.16 09:15'},
+  {id:4,user:'khj6546',type:'슬롯생성',msg:'슬롯 #5 — "에어컨필터" 100유입 (대행사테스트)',date:'2026.06.16 09:10'},
+  {id:3,user:'khj6546',type:'계정변경',msg:'user02 계정 중단 처리',date:'2026.06.15 17:32'},
+  {id:2,user:'총판테스트',type:'로그인',msg:'총판 로그인',date:'2026.06.15 15:10'},
+  {id:1,user:'khj6546',type:'슬롯생성',msg:'슬롯 #1 등록 — "써큘레이터" 100유입',date:'2026.06.14 11:00'},
+];
+
+var NAVER_SEARCH = 'https://search.shopping.naver.com/search/all?query=';
+
+var currentUser = null;
+var mySlots = [];
+var mySlotFilter = '전체', mySlotPage = 1;
+var slotFilter = '전체', slotPage = 1;
+var userTabs = ['home','slots','apply','rank','notice','cs'];
+var admTabs = ['adm-dash','adm-slots','adm-accounts','adm-notices','adm-logs','adm-rank','adm-setting'];
+
+function isDev(){ return currentUser && currentUser.grade === '개발사'; }
+function isNormal(){ return currentUser && currentUser.grade === '일반'; }
+
+// ============================================================
+// 로그인
+// ============================================================
+function doLogin(){
+  var id = document.getElementById('login-id').value.trim();
+  var pw = document.getElementById('login-pw').value;
+  var u = USERS[id];
+  if(!u || u.pw !== pw){
+    var el = document.getElementById('login-error');
+    el.style.display='flex';
+    setTimeout(function(){el.style.display='none';},3000);
+    return;
+  }
+  currentUser = {id:id, name:u.name, grade:u.grade};
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='flex';
+  addLog(id,'로그인',u.grade+' 계정 로그인');
+  initUI();
+}
+
+function doLogout(){
+  if(!confirm('로그아웃 하시겠습니까?'))return;
+  currentUser=null;
+  document.getElementById('login-id').value='';
+  document.getElementById('login-pw').value='';
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+}
+
+// ============================================================
+// UI 초기화 (개발사 vs 사용자 분기)
+// ============================================================
+function initUI(){
+  var u = currentUser;
+  document.getElementById('sb-name').textContent = u.name;
+  document.getElementById('sb-id').textContent = '@'+u.id;
+
+  // 등급 배지: 일반 계정은 숨김
+  var badge = document.getElementById('sb-grade-badge');
+  if(u.grade==='일반'){ badge.style.display='none'; }
+  else { badge.style.display=''; badge.textContent=u.grade; badge.className='user-card-grade grade-'+u.grade; }
+
+  if(isDev()){
+    // 개발사 → 어드민 뷰
+    document.getElementById('menu-user').style.display='none';
+    document.getElementById('menu-admin').style.display='';
+    document.getElementById('logo-sub').textContent='개발사 관리 패널';
+    document.querySelectorAll('.user-tab').forEach(function(t){t.style.display='none'});
+    showAdmTab('adm-dash');
+  } else {
+    // 총판/대행사/일반 → 사용자 뷰
+    document.getElementById('menu-user').style.display='';
+    document.getElementById('menu-admin').style.display='none';
+    document.getElementById('logo-sub').textContent='리워드 서비스';
+    document.querySelectorAll('.adm-tab').forEach(function(t){t.style.display='none'});
+    mySlots = SLOTS.filter(function(s){return s.user===u.id});
+    document.getElementById('home-greeting').textContent = u.name+' 님, 안녕하세요';
+    document.getElementById('apply-days').value = SETTING.days;
+    // 일반 계정: 슬롯 세팅 숨김
+    document.getElementById('nav-apply').style.display = isNormal()?'none':'';
+    document.getElementById('slot-page-btn-wrap').style.display = isNormal()?'none':'';
+    showTab('home');
+  }
+}
+
+// ============================================================
+// 사용자 탭
+// ============================================================
+function showTab(name){
+  if(name==='apply' && isNormal()){ showToast('슬롯 세팅은 총판·대행사만 가능합니다'); return; }
+  userTabs.forEach(function(t){
+    document.getElementById('tab-'+t).style.display = t===name?'':'none';
+    var nav=document.getElementById('nav-'+t);
+    if(nav) nav.classList.toggle('active', t===name);
+  });
+  if(name==='home') renderHome();
+  if(name==='slots') renderMySlots();
+  if(name==='apply') checkApplyOpen();
+  if(name==='rank') renderRank();
+  if(name==='notice') renderNotices();
+}
+
+function renderHome(){
+  var ok=mySlots.filter(function(s){return s.status==='정상'}).length;
+  var err=mySlots.filter(function(s){return s.status==='오류'}).length;
+  var end=mySlots.filter(function(s){return s.status==='마감예정'}).length;
+  document.getElementById('h-total').textContent=mySlots.length;
+  document.getElementById('h-ok').textContent=ok;
+  document.getElementById('h-err').textContent=err;
+  document.getElementById('h-end').textContent=end;
+
+  var isOpen=receptionOpen();
+  document.getElementById('close-dot').className='close-dot'+(isOpen?'':' closed');
+  document.getElementById('close-status-text').textContent=isOpen?'현재 접수 가능':'오늘 접수 마감됨';
+  document.getElementById('banner-close-time').textContent=SETTING.close;
+  document.getElementById('apply-quick-btn').style.display=(isOpen&&!isNormal())?'':'none';
+  document.getElementById('home-close-status').innerHTML='<span style="width:8px;height:8px;border-radius:50%;background:'+(isOpen?'#16a34a':'#dc2626')+';display:inline-block"></span><span style="color:'+(isOpen?'#15803d':'#dc2626')+';font-weight:600">'+(isOpen?'접수 중':'마감')+'</span>';
+
+  document.getElementById('err-box').style.display=err>0?'':'none';
+  document.getElementById('err-count').textContent=err;
+
+  var tbody=document.getElementById('home-slot-tbody');
+  var recent=mySlots.slice(0,3);
+  var sb={정상:'b-ok',오류:'b-err',대기:'b-wait',마감예정:'b-end'};
+  if(!recent.length){tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><i class="ti ti-speakerphone"></i><p>등록된 슬롯이 없습니다</p></div></td></tr>';}
+  else{tbody.innerHTML=recent.map(function(s){
+    return '<tr><td style="font-weight:600">'+s.keyword+'</td><td style="font-family:monospace;font-size:11px;color:#888">'+s.mid+'</td><td><span class="badge '+(sb[s.status]||'b-gray')+'">'+s.status+'</span></td><td style="text-align:center;color:#2563eb;font-weight:700">'+(s.inflow||100)+'</td><td style="text-align:center;color:#16a34a;font-weight:600">'+s.days+'일</td><td style="font-size:11px;color:#aaa">'+s.end+'</td><td><button class="btn btn-sm" onclick="openRankCompare('+s.id+')"><i class="ti ti-external-link" style="font-size:11px"></i> 확인</button></td></tr>';
+  }).join('');}
+}
+
+function filterMySlots(f,el){
+  mySlotFilter=f;mySlotPage=1;
+  document.querySelectorAll('#slot-tabs .tab').forEach(function(t){t.classList.remove('active')});
+  el.classList.add('active');renderMySlots();
+}
+
+function renderMySlots(){
+  var q=(document.getElementById('slot-search').value||'').toLowerCase();
+  var filtered=mySlots.filter(function(s){var mf=mySlotFilter==='전체'||s.status===mySlotFilter;var mq=!q||s.keyword.toLowerCase().includes(q)||s.mid.includes(q);return mf&&mq;});
+  var pp=10,total=filtered.length,pages=Math.max(1,Math.ceil(total/pp));
+  if(mySlotPage>pages)mySlotPage=pages;
+  var paged=filtered.slice((mySlotPage-1)*pp,mySlotPage*pp);
+  var sb={정상:'b-ok',오류:'b-err',대기:'b-wait',마감예정:'b-end'};
+  var thead=document.getElementById('my-slot-thead');
+  var tbody=document.getElementById('my-slot-tbody');
+
+  if(isNormal()){
+    // 일반: 유입량·작업일수 표시 + 키워드/상품 수정 + 순위확인 (삭제/연장 없음)
+    thead.innerHTML='<tr><th style="width:44px">번호</th><th>키워드</th><th style="width:52px">상태</th><th style="width:88px">상품 MID</th><th style="width:56px">유입량</th><th style="width:50px">일수</th><th style="width:78px">종료일</th><th style="width:160px">관리</th></tr>';
+    tbody.innerHTML=paged.length?paged.map(function(s){
+      var bg=s.status==='정상'?'background:rgba(22,163,74,.04)':'';
+      return '<tr style="'+bg+'"><td style="color:#ccc">'+s.id+'</td><td style="font-weight:700;color:#111">'+s.keyword+'</td><td><span class="badge '+(sb[s.status]||'b-gray')+'">'+s.status+'</span></td><td style="font-family:monospace;font-size:11px;color:#888">'+s.mid+'</td><td style="text-align:center;font-weight:700;color:#2563eb">'+(s.inflow||100)+'</td><td style="text-align:center;color:#16a34a;font-weight:600">'+s.days+'일</td><td style="font-size:11px;color:#aaa">'+s.end+'</td><td><div class="tbl-actions"><button class="btn btn-sm btn-blue" onclick="openRankCompare('+s.id+')"><i class="ti ti-external-link" style="font-size:11px"></i> 순위</button><button class="btn btn-sm" onclick="openEditModal('+s.id+')"><i class="ti ti-edit"></i> 수정</button></div></td></tr>';
+    }).join(''):'<tr><td colspan="8"><div class="empty-state"><i class="ti ti-speakerphone"></i><p>등록된 슬롯이 없습니다</p></div></td></tr>';
+  } else {
+    // 총판·대행사: 유입량 컬럼 + 전체 관리
+    thead.innerHTML='<tr><th style="width:44px">번호</th><th style="width:100px">키워드</th><th style="width:52px">상태</th><th style="width:54px">가격비교</th><th style="width:84px">상품 MID</th><th style="width:56px">유입량</th><th style="width:48px">일수</th><th style="width:76px">종료일</th><th style="width:160px">관리</th></tr>';
+    tbody.innerHTML=paged.length?paged.map(function(s){
+      return '<tr><td style="color:#ccc">'+s.id+'</td><td style="font-weight:700;color:#111">'+s.keyword+'</td><td><span class="badge '+(sb[s.status]||'b-gray')+'">'+s.status+'</span></td><td style="text-align:center">'+(s.price==='Y'?'<span class="badge b-blue">Y</span>':'<span style="color:#ddd">N</span>')+'</td><td style="font-family:monospace;font-size:11px;color:#888">'+s.mid+'</td><td style="text-align:center;font-weight:700;color:#2563eb">'+(s.inflow||100)+'</td><td style="text-align:center;font-weight:600;color:#16a34a">'+s.days+'일</td><td style="font-size:11px;color:#aaa">'+s.end+'</td><td><div class="tbl-actions"><button class="btn btn-sm" onclick="openRankCompare('+s.id+')"><i class="ti ti-chart-bar"></i></button><button class="btn btn-sm" onclick="openEditModal('+s.id+')"><i class="ti ti-edit"></i></button><button class="btn btn-sm" onclick="openExtendModal('+s.id+')"><i class="ti ti-calendar-plus"></i></button><button class="btn btn-sm btn-danger" onclick="deleteMySlot('+s.id+')"><i class="ti ti-trash"></i></button></div></td></tr>';
+    }).join(''):'<tr><td colspan="9"><div class="empty-state"><i class="ti ti-speakerphone"></i><p>슬롯이 없습니다</p></div></td></tr>';
+  }
+
+  var pg=document.getElementById('my-slot-pagination'),btns='';
+  for(var i=1;i<=pages;i++){btns+='<button class="pg-btn'+(i===mySlotPage?' active':'')+'" onclick="mySlotPage='+i+';renderMySlots()">'+i+'</button>';}
+  pg.innerHTML=btns;
+}
+
+function openEditModal(id){
+  var s=mySlots.find(function(x){return x.id===id});if(!s)return;
+  document.getElementById('edit-id').value=id;
+  document.getElementById('edit-kw').value=s.keyword;
+  document.getElementById('edit-mid').value=s.mid;
+  document.getElementById('edit-link').value=s.link||'';
+  document.getElementById('edit-cmid').value=s.cmid||'';
+  document.getElementById('edit-price').value=s.price;
+  document.getElementById('edit-inflow').value=s.inflow||100;
+  document.getElementById('edit-days').value=s.days||10;
+  // 일반 계정: 키워드/상품(MID·링크)만 수정 가능 → 유입량/일수/가격비교 숨김
+  var hide=isNormal();
+  document.getElementById('edit-inflow-wrap').style.display=hide?'none':'';
+  document.getElementById('edit-days-wrap').style.display=hide?'none':'';
+  document.getElementById('edit-cmid-wrap').style.display=hide?'none':'';
+  document.getElementById('edit-price-wrap').style.display=hide?'none':'';
+  document.getElementById('modal-edit').classList.add('open');
+}
+function saveEdit(){
+  var id=parseInt(document.getElementById('edit-id').value);
+  var s=mySlots.find(function(x){return x.id===id});if(!s)return;
+  var kw=document.getElementById('edit-kw').value.trim();
+  var mid=document.getElementById('edit-mid').value.trim();
+  var link=document.getElementById('edit-link').value.trim();
+  if(!kw||!mid||!link){alert('키워드, MID, 상품 링크는 필수입니다');return;}
+  s.keyword=kw;s.mid=mid;s.link=link;
+  if(!isNormal()){
+    // 총판·대행사: 유입량/일수/가격비교까지 수정
+    var inflow=parseInt(document.getElementById('edit-inflow').value)||100;
+    if(inflow<100||inflow%100!==0){alert('유입량은 100 단위로 설정해주세요');return;}
+    var days=parseInt(document.getElementById('edit-days').value)||10;
+    if(days<1||days>30){alert('작업일수는 1~30일 사이로 설정해주세요');return;}
+    s.inflow=inflow;s.days=days;
+    s.cmid=document.getElementById('edit-cmid').value.trim();
+    s.price=document.getElementById('edit-price').value;
+  }
+  // 전역 SLOTS도 동기화
+  var g=SLOTS.find(function(x){return x.id===id});if(g){g.keyword=s.keyword;g.mid=s.mid;g.link=s.link;g.inflow=s.inflow;g.days=s.days;g.cmid=s.cmid;g.price=s.price;}
+  closeModal('modal-edit');renderMySlots();showToast('슬롯 수정 완료');
+}
+
+function openExtendModal(id){
+  var s=mySlots.find(function(x){return x.id===id});if(!s)return;
+  document.getElementById('extend-id').value=id;
+  document.getElementById('extend-info').textContent='슬롯: '+s.keyword+' ('+s.mid+') · 현재 종료일: '+s.end;
+  document.getElementById('modal-extend').classList.add('open');
+}
+function confirmExtend(){
+  var id=parseInt(document.getElementById('extend-id').value);
+  var days=parseInt(document.getElementById('extend-days').value)||10;
+  var s=mySlots.find(function(x){return x.id===id});if(!s)return;
+  s.days+=days;
+  var ed=new Date(s.end.replace(/\./g,'-'));ed.setDate(ed.getDate()+days);
+  s.end=fmtDate(ed);
+  closeModal('modal-extend');renderMySlots();showToast(days+'일 연장 완료');
+}
+function deleteMySlot(id){
+  var s=mySlots.find(function(x){return x.id===id});
+  if(!confirm('"'+s.keyword+'" 슬롯을 삭제하시겠습니까?'))return;
+  mySlots=mySlots.filter(function(x){return x.id!==id});
+  var gi=SLOTS.findIndex(function(x){return x.id===id});if(gi>=0)SLOTS.splice(gi,1);
+  renderMySlots();showToast('슬롯 삭제 완료');
+}
+
+// ── 슬롯 세팅 ──
+function receptionOpen(){
+  var now=new Date(),h=now.getHours(),m=now.getMinutes();
+  var ch=parseInt(SETTING.close.split(':')[0]),cm=parseInt(SETTING.close.split(':')[1]);
+  return !(h>ch||(h===ch&&m>=cm));
+}
+function checkApplyOpen(){
+  document.getElementById('apply-closed-banner').style.display=receptionOpen()?'none':'';
+  document.getElementById('apply-close-time').textContent=SETTING.close;
+}
+function clearApplyForm(){
+  ['apply-kw','apply-mid','apply-link','apply-cmid'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('apply-inflow').value=100;
+  document.getElementById('apply-days').value=SETTING.days;
+  document.getElementById('apply-price').value='N';
+}
+function submitApply(){
+  if(!receptionOpen()){alert('접수 마감 시간('+SETTING.close+')이 지났습니다');return;}
+  var kw=document.getElementById('apply-kw').value.trim();
+  var mid=document.getElementById('apply-mid').value.trim();
+  var link=document.getElementById('apply-link').value.trim();
+  if(!kw||!mid||!link){alert('키워드, MID, 상품 링크는 필수입니다');return;}
+  var inflow=parseInt(document.getElementById('apply-inflow').value)||100;
+  if(inflow<100||inflow%100!==0){alert('유입량은 100 단위로만 설정 가능합니다 (100·200·300...)');return;}
+  var days=parseInt(document.getElementById('apply-days').value)||10;
+  if(days<1||days>30){alert('작업일수는 1~30일 사이로 설정해주세요');return;}
+  var today=new Date();
+  var end=new Date(today);end.setDate(end.getDate()+days);
+  var newId=SLOTS.length?Math.max.apply(null,SLOTS.map(function(s){return s.id}))+1:1;
+  var slot={id:newId,user:currentUser.id,keyword:kw,price:document.getElementById('apply-price').value,mid:mid,cmid:document.getElementById('apply-cmid').value.trim(),link:link,inflow:inflow,days:days,start:fmtDate(today),end:fmtDate(end),status:'대기'};
+  SLOTS.unshift(slot);mySlots.unshift(slot);
+  addLog(currentUser.id,'슬롯생성','슬롯 #'+newId+' — "'+kw+'" '+inflow+'유입 '+days+'일');
+  clearApplyForm();
+  showToast('슬롯 세팅 완료');
+  showTab('slots');
+}
+
+// ── 순위 조회 (사용자) ──
+function renderRank(){
+  var tbody=document.getElementById('rank-tbody');
+  var sb={정상:'b-ok',오류:'b-err',대기:'b-wait',마감예정:'b-end'};
+  if(!mySlots.length){tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><i class="ti ti-chart-bar"></i><p>슬롯이 없습니다</p></div></td></tr>';return;}
+  tbody.innerHTML=mySlots.map(function(s){
+    return '<tr><td style="color:#ccc">'+s.id+'</td><td style="font-weight:700">'+s.keyword+'</td><td style="font-family:monospace;font-size:11px;color:#888">'+s.mid+'</td><td><span class="badge '+(sb[s.status]||'b-gray')+'">'+s.status+'</span></td><td style="font-size:11px;color:#aaa">'+s.end+'</td><td><div class="rank-link-box"><button class="btn btn-sm btn-blue" onclick="openRankCompare('+s.id+')"><i class="ti ti-external-link" style="font-size:11px"></i> 키워드+상품 동시 열기</button></div></td></tr>';
+  }).join('');
+}
+function openRankSearch(){
+  var kw=document.getElementById('rank-kw').value.trim();
+  if(!kw){alert('키워드를 입력해주세요');return;}
+  window.open(NAVER_SEARCH+encodeURIComponent(kw),'_blank');
+}
+// 키워드 검색 결과 + 상품 링크 동시 열기 (순위 대조용)
+function openRankCompare(id){
+  var s=(isDev()?SLOTS:mySlots).find(function(x){return x.id===id});if(!s)return;
+  window.open(NAVER_SEARCH+encodeURIComponent(s.keyword),'_blank');
+  if(s.link) window.open(s.link,'_blank');
+}
+
+// ── 공지 (사용자) ──
+function renderNotices(){
+  var list=document.getElementById('notice-list');
+  list.innerHTML=NOTICES.map(function(n){
+    var pin=n.pin?'<span class="notice-chip chip-pin">고정</span>':'';
+    var urg=n.urgent?'<span class="notice-chip chip-urgent">긴급</span>':'';
+    var pc=n.urgent?'#f59e0b':n.pin?'#16a34a':'#d1d5db';
+    return '<div class="notice-card" onclick="this.classList.toggle(\'open\')"><div class="notice-pin" style="background:'+pc+'"></div><div style="flex:1"><div class="notice-title">'+n.title+pin+urg+'</div><div class="notice-meta">'+n.date+'</div><div class="notice-content">'+n.content+'</div></div></div>';
+  }).join('');
+}
+
+function submitCS(){
+  var c=document.getElementById('cs-content').value.trim();
+  if(!c){alert('문의 내용을 입력해주세요');return;}
+  document.getElementById('cs-content').value='';showToast('문의가 접수되었습니다');
+}
+
+// ============================================================
+// 어드민 탭
+// ============================================================
+function showAdmTab(name){
+  admTabs.forEach(function(t){
+    document.getElementById('tab-'+t).style.display = t===name?'':'none';
+    var nav=document.getElementById('nav-'+t);
+    if(nav) nav.classList.toggle('active', t===name);
+  });
+  if(name==='adm-dash') renderDash();
+  if(name==='adm-slots') renderAdmSlots();
+  if(name==='adm-accounts') renderAccounts();
+  if(name==='adm-notices') renderAdmNotices();
+  if(name==='adm-logs') renderLogs();
+  if(name==='adm-rank') renderAdmRank();
+  if(name==='adm-setting'){document.getElementById('cfg-close').value=SETTING.close;document.getElementById('cfg-days').value=SETTING.days;}
+}
+
+function renderDash(){
+  document.getElementById('d-slots').textContent=SLOTS.length;
+  document.getElementById('d-ok').textContent=SLOTS.filter(function(s){return s.status==='정상'}).length;
+  document.getElementById('d-err').textContent=SLOTS.filter(function(s){return s.status==='오류'}).length;
+  document.getElementById('d-accs').textContent=ACCOUNTS.length;
+  document.getElementById('d-close').textContent=SETTING.close;
+  var sb={정상:'b-ok',오류:'b-err',대기:'b-wait',마감예정:'b-gray'};
+  document.getElementById('d-slot-tbody').innerHTML=SLOTS.slice(0,5).map(function(s){
+    return '<tr><td style="color:#ccc">'+s.id+'</td><td style="font-weight:600;color:#2563eb">'+s.user+'</td><td style="font-weight:600">'+s.keyword+'</td><td style="font-family:monospace;font-size:11px;color:#888">'+s.mid+'</td><td><span class="badge '+(sb[s.status]||'b-gray')+'">'+s.status+'</span></td><td style="font-size:11px;color:#aaa">'+s.end+'</td></tr>';
+  }).join('');
+}
+
+// ── 어드민 슬롯 ──
+function updateAsStats(){
+  document.getElementById('as-total').textContent=SLOTS.length;
+  document.getElementById('as-ok').textContent=SLOTS.filter(function(s){return s.status==='정상'}).length;
+  document.getElementById('as-err').textContent=SLOTS.filter(function(s){return s.status==='오류'}).length;
+  document.getElementById('as-wait').textContent=SLOTS.filter(function(s){return s.status==='대기'}).length;
+  document.getElementById('as-end').textContent=SLOTS.filter(function(s){return s.status==='마감예정'}).length;
+}
+function asFilter(f,el){
+  slotFilter=f;slotPage=1;
+  document.querySelectorAll('#as-tabs .tab').forEach(function(t){t.classList.remove('active')});
+  el.classList.add('active');renderAdmSlots();
+}
+function renderAdmSlots(){
+  updateAsStats();
+  var q=(document.getElementById('as-search').value||'').toLowerCase();
+  var filtered=SLOTS.filter(function(s){var mf=slotFilter==='전체'||s.status===slotFilter;var mq=!q||s.keyword.toLowerCase().includes(q)||s.mid.includes(q)||s.user.toLowerCase().includes(q);return mf&&mq;});
+  var pp=10,total=filtered.length,pages=Math.max(1,Math.ceil(total/pp));
+  if(slotPage>pages)slotPage=pages;
+  var paged=filtered.slice((slotPage-1)*pp,slotPage*pp);
+  var sb={정상:'b-ok',오류:'b-err',대기:'b-wait',마감예정:'b-gray'};
+  var tbody=document.getElementById('adm-slot-tbody');
+  if(!paged.length){tbody.innerHTML='<tr><td colspan="11"><div class="empty-state"><i class="ti ti-inbox"></i><p>슬롯이 없습니다</p></div></td></tr>';}
+  else{tbody.innerHTML=paged.map(function(s){
+    var linkBtn=s.link?'<a href="'+s.link+'" target="_blank" class="btn btn-sm" style="text-decoration:none"><i class="ti ti-link"></i></a>':'<span style="color:#ddd">—</span>';
+    return '<tr><td><input type="checkbox" class="as-chk" data-id="'+s.id+'"></td><td style="color:#ccc">'+s.id+'</td><td style="font-weight:600;color:#2563eb">'+s.user+'</td><td><span class="badge '+(sb[s.status]||'b-gray')+'">'+s.status+'</span></td><td style="font-weight:600">'+s.keyword+'</td><td style="font-family:monospace;font-size:11px;color:#888">'+s.mid+'</td><td style="text-align:center">'+linkBtn+'</td><td style="text-align:center;font-weight:700;color:#2563eb">'+(s.inflow||100)+'</td><td style="text-align:center;color:#16a34a;font-weight:600">'+s.days+'일</td><td style="font-size:11px;color:#aaa">'+s.end+'</td><td><div class="tbl-actions"><button class="btn btn-sm" onclick="openAdmEditModal('+s.id+')"><i class="ti ti-edit"></i></button><button class="btn btn-sm btn-danger" onclick="deleteAdmSlot('+s.id+')"><i class="ti ti-trash"></i></button></div></td></tr>';
+  }).join('');}
+  var pg=document.getElementById('as-pagination'),btns='';
+  for(var i=1;i<=pages;i++){btns+='<button class="pg-btn'+(i===slotPage?' active':'')+'" onclick="slotPage='+i+';renderAdmSlots()">'+i+'</button>';}
+  pg.innerHTML=btns;
+}
+function openAdmSlotModal(){document.getElementById('modal-adm-slot').classList.add('open');}
+function addAdmSlot(){
+  var kw=document.getElementById('as-kw').value.trim();
+  var mid=document.getElementById('as-mid').value.trim();
+  var link=document.getElementById('as-link').value.trim();
+  if(!kw||!mid||!link){alert('키워드, MID, 상품 링크는 필수입니다');return;}
+  var inflow=parseInt(document.getElementById('as-inflow').value)||100;
+  if(inflow<100||inflow%100!==0){alert('유입량은 100 단위로 설정해주세요');return;}
+  var days=parseInt(document.getElementById('as-days').value)||10;
+  if(days<1||days>30){alert('작업일수는 1~30일 사이로 설정해주세요');return;}
+  var today=new Date();
+  var end=new Date(today);end.setDate(end.getDate()+days);
+  var newId=SLOTS.length?Math.max.apply(null,SLOTS.map(function(s){return s.id}))+1:1;
+  SLOTS.unshift({id:newId,user:'khj6546',keyword:kw,price:document.getElementById('as-price').value,mid:mid,cmid:document.getElementById('as-cmid').value.trim(),link:link,inflow:inflow,days:days,start:fmtDate(today),end:fmtDate(end),status:document.getElementById('as-status').value});
+  addLog('khj6546','슬롯생성','슬롯 #'+newId+' — "'+kw+'" '+inflow+'유입 '+days+'일');
+  closeModal('modal-adm-slot');
+  ['as-kw','as-mid','as-link','as-cmid'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('as-inflow').value=100;document.getElementById('as-days').value=10;
+  renderAdmSlots();showToast('슬롯 추가 완료');
+}
+function openAdmEditModal(id){
+  var s=SLOTS.find(function(x){return x.id===id});if(!s)return;
+  document.getElementById('ae-id').value=id;
+  document.getElementById('ae-kw').value=s.keyword;
+  document.getElementById('ae-mid').value=s.mid;
+  document.getElementById('ae-link').value=s.link||'';
+  document.getElementById('ae-cmid').value=s.cmid||'';
+  document.getElementById('ae-price').value=s.price;
+  document.getElementById('ae-inflow').value=s.inflow||100;
+  document.getElementById('ae-days').value=s.days||10;
+  document.getElementById('ae-status').value=s.status;
+  document.getElementById('modal-adm-edit').classList.add('open');
+}
+function saveAdmEdit(){
+  var id=parseInt(document.getElementById('ae-id').value);
+  var s=SLOTS.find(function(x){return x.id===id});if(!s)return;
+  var kw=document.getElementById('ae-kw').value.trim();
+  var mid=document.getElementById('ae-mid').value.trim();
+  var link=document.getElementById('ae-link').value.trim();
+  if(!kw||!mid||!link){alert('키워드, MID, 상품 링크는 필수입니다');return;}
+  var inflow=parseInt(document.getElementById('ae-inflow').value)||100;
+  if(inflow<100||inflow%100!==0){alert('유입량은 100 단위로 설정해주세요');return;}
+  var days=parseInt(document.getElementById('ae-days').value)||10;
+  if(days<1||days>30){alert('작업일수는 1~30일 사이로 설정해주세요');return;}
+  s.keyword=kw;s.mid=mid;s.link=link;s.cmid=document.getElementById('ae-cmid').value.trim();s.price=document.getElementById('ae-price').value;s.inflow=inflow;s.days=days;s.status=document.getElementById('ae-status').value;
+  addLog('khj6546','슬롯수정','슬롯 #'+id+' 수정 — "'+kw+'" '+inflow+'유입 '+days+'일');
+  closeModal('modal-adm-edit');renderAdmSlots();showToast('슬롯 수정 완료');
+}
+function deleteAdmSlot(id){
+  var s=SLOTS.find(function(x){return x.id===id});
+  if(!confirm('"'+(s?s.keyword:id)+'" 슬롯을 삭제하시겠습니까?'))return;
+  SLOTS.splice(SLOTS.indexOf(s),1);
+  addLog('khj6546','슬롯삭제','슬롯 #'+id+' 삭제');
+  renderAdmSlots();showToast('슬롯 삭제 완료');
+}
+function toggleAllAdmSlots(el){document.querySelectorAll('.as-chk').forEach(function(c){c.checked=el.checked});}
+function bulkStatus(){
+  var ids=Array.from(document.querySelectorAll('.as-chk:checked')).map(function(c){return parseInt(c.dataset.id)});
+  if(!ids.length){alert('선택된 슬롯이 없습니다');return;}
+  var st=prompt('변경할 상태 (정상/오류/대기/마감예정)','정상');if(!st)return;
+  ids.forEach(function(id){var s=SLOTS.find(function(x){return x.id===id});if(s)s.status=st;});
+  renderAdmSlots();showToast(ids.length+'개 상태 변경');
+}
+function bulkDeleteAdm(){
+  var ids=Array.from(document.querySelectorAll('.as-chk:checked')).map(function(c){return parseInt(c.dataset.id)});
+  if(!ids.length){alert('선택된 슬롯이 없습니다');return;}
+  if(!confirm(ids.length+'개 슬롯을 삭제하시겠습니까?'))return;
+  ids.forEach(function(id){var i=SLOTS.findIndex(function(s){return s.id===id});if(i>=0)SLOTS.splice(i,1);});
+  renderAdmSlots();showToast(ids.length+'개 삭제');
+}
+
+// ── 어드민 계정 ──
+function renderAccounts(){
+  var q=(document.getElementById('acc-search').value||'').toLowerCase();
+  var gf=document.getElementById('acc-grade-f').value;
+  var sf=document.getElementById('acc-status-f').value;
+  var filtered=ACCOUNTS.filter(function(a){return(!q||a.user.toLowerCase().includes(q)||a.name.toLowerCase().includes(q))&&(!gf||a.grade===gf)&&(!sf||a.status===sf);});
+  var gc={개발사:'b-ok',총판:'b-blue',대행사:'b-orange',일반:'b-gray'};
+  var tbody=document.getElementById('adm-acc-tbody');
+  if(!filtered.length){tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><i class="ti ti-users"></i><p>계정이 없습니다</p></div></td></tr>';return;}
+  tbody.innerHTML=filtered.map(function(a){
+    var cnt=SLOTS.filter(function(s){return s.user===a.user}).length;
+    var sb=a.status==='정상'?'b-ok':'b-err';
+    var pb=a.status==='정상'?'<button class="btn btn-sm btn-warn" onclick="toggleAcc('+a.id+')" title="중단"><i class="ti ti-player-pause"></i></button>':'<button class="btn btn-sm btn-primary" onclick="toggleAcc('+a.id+')" style="padding:4px 8px" title="재개"><i class="ti ti-player-play"></i></button>';
+    var gb=a.user==='khj6546'?'':'<button class="btn btn-sm btn-blue" onclick="openGradeModal('+a.id+')" title="등급변경"><i class="ti ti-arrows-exchange"></i></button>';
+    var db=a.user==='khj6546'?'':'<button class="btn btn-sm btn-danger" onclick="deleteAcc('+a.id+')" title="삭제"><i class="ti ti-trash"></i></button>';
+    return '<tr><td><input type="checkbox"></td><td style="color:#ccc">'+a.id+'</td><td style="font-weight:600;color:'+(a.user==='khj6546'?'#16a34a':'#111')+'">'+a.user+'</td><td>'+a.name+'</td><td><span class="badge '+(gc[a.grade]||'b-gray')+'">'+a.grade+'</span></td><td><span class="badge '+sb+'">'+a.status+'</span></td><td style="text-align:center;color:#16a34a;font-weight:600">'+cnt+'</td><td style="font-size:11px;color:#aaa">'+a.joined+'</td><td><div class="tbl-actions">'+gb+pb+db+'</div></td></tr>';
+  }).join('');
+}
+function openAddAccModal(){document.getElementById('modal-add-acc').classList.add('open');}
+function addAccount(){
+  var user=document.getElementById('na-id').value.trim();
+  var name=document.getElementById('na-name').value.trim();
+  var pw=document.getElementById('na-pw').value;
+  if(!user||!name||!pw){alert('아이디, 이름, 비밀번호는 필수입니다');return;}
+  var grade=document.getElementById('na-grade').value;
+  var newId=ACCOUNTS.length?Math.max.apply(null,ACCOUNTS.map(function(a){return a.id}))+1:1;
+  ACCOUNTS.push({id:newId,user:user,name:name,grade:grade,status:'정상',joined:fmtDate(new Date())});
+  USERS[user]={pw:pw,grade:grade,name:name};
+  addLog('khj6546','계정변경','신규 계정 생성: '+user+' ('+grade+')');
+  closeModal('modal-add-acc');
+  ['na-id','na-name','na-pw'].forEach(function(id){document.getElementById(id).value='';});
+  renderAccounts();showToast('계정 생성 완료');
+}
+function toggleAcc(id){
+  var a=ACCOUNTS.find(function(x){return x.id===id});if(!a)return;
+  if(a.status==='정상'){if(!confirm(a.user+' 계정을 중단하시겠습니까?'))return;a.status='중단';addLog('khj6546','계정변경',a.user+' 중단');}
+  else{a.status='정상';addLog('khj6546','계정변경',a.user+' 재개');}
+  renderAccounts();showToast('상태 변경 완료');
+}
+function deleteAcc(id){
+  var a=ACCOUNTS.find(function(x){return x.id===id});
+  if(!confirm((a?a.user:'해당')+' 계정을 삭제하시겠습니까?'))return;
+  ACCOUNTS.splice(ACCOUNTS.indexOf(a),1);
+  if(a)delete USERS[a.user];
+  addLog('khj6546','계정변경',(a?a.user:'계정')+' 삭제');
+  renderAccounts();showToast('계정 삭제 완료');
+}
+function openGradeModal(id){
+  var a=ACCOUNTS.find(function(x){return x.id===id});if(!a)return;
+  document.getElementById('gm-id').value=id;
+  document.getElementById('gm-info').textContent=a.user+' ('+a.name+') · 현재 등급: '+a.grade;
+  document.getElementById('gm-grade').value=a.grade;
+  document.getElementById('modal-grade').classList.add('open');
+}
+function saveGrade(){
+  var id=parseInt(document.getElementById('gm-id').value);
+  var a=ACCOUNTS.find(function(x){return x.id===id});if(!a)return;
+  var ng=document.getElementById('gm-grade').value;
+  var og=a.grade;
+  a.grade=ng;
+  if(USERS[a.user])USERS[a.user].grade=ng;
+  addLog('khj6546','계정변경',a.user+' 등급 변경: '+og+' → '+ng);
+  closeModal('modal-grade');renderAccounts();showToast('등급 변경 완료 ('+og+' → '+ng+')');
+}
+
+// ── 어드민 공지 ──
+function renderAdmNotices(){
+  var pin=NOTICES.filter(function(n){return n.pin});
+  var norm=NOTICES.filter(function(n){return !n.pin});
+  function html(n){
+    var pc=n.urgent?'#f59e0b':n.pin?'#16a34a':'#d1d5db';
+    return '<div class="notice-card"><div class="notice-pin" style="background:'+pc+'"></div><div style="flex:1;min-width:0"><div class="notice-title">'+n.title+'</div><div class="notice-meta">'+n.date+'</div></div><div style="margin-left:auto;display:flex;gap:5px;align-items:center">'+(n.pin?'<span class="badge b-ok" style="font-size:9px">고정</span>':'')+(n.urgent?'<span class="badge b-wait" style="font-size:9px">긴급</span>':'')+'<button class="btn btn-sm btn-danger" onclick="deleteNotice('+n.id+')"><i class="ti ti-trash"></i></button></div></div>';
+  }
+  document.getElementById('adm-pinned-notices').innerHTML=pin.length?pin.map(html).join(''):'<div style="color:#ddd;font-size:12px;padding:4px">고정 공지 없음</div>';
+  document.getElementById('adm-normal-notices').innerHTML=norm.length?norm.map(html).join(''):'<div style="color:#ddd;font-size:12px;padding:4px">일반 공지 없음</div>';
+}
+function openAddNoticeModal(){document.getElementById('modal-add-notice').classList.add('open');}
+function addNotice(){
+  var title=document.getElementById('nn-title').value.trim();
+  if(!title){alert('제목을 입력해주세요');return;}
+  var newId=NOTICES.length?Math.max.apply(null,NOTICES.map(function(n){return n.id}))+1:1;
+  NOTICES.unshift({id:newId,title:title,content:document.getElementById('nn-content').value.trim(),pin:document.getElementById('nn-pin').checked,urgent:document.getElementById('nn-urgent').checked,date:fmtDate(new Date())});
+  closeModal('modal-add-notice');
+  ['nn-title','nn-content'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('nn-pin').checked=false;document.getElementById('nn-urgent').checked=false;
+  renderAdmNotices();showToast('공지 게시 완료');
+}
+function deleteNotice(id){
+  if(!confirm('공지를 삭제하시겠습니까?'))return;
+  var i=NOTICES.findIndex(function(n){return n.id===id});if(i>=0)NOTICES.splice(i,1);
+  renderAdmNotices();showToast('공지 삭제 완료');
+}
+
+// ── 어드민 로그 ──
+function addLog(user,type,msg){
+  var now=new Date();
+  var d=fmtDate(now)+' '+(now.getHours()<10?'0':'')+now.getHours()+':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
+  var newId=LOGS.length?Math.max.apply(null,LOGS.map(function(l){return l.id}))+1:1;
+  LOGS.unshift({id:newId,user:user,type:type,msg:msg,date:d});
+}
+function renderLogs(){
+  var tf=document.getElementById('log-type-f').value;
+  var q=(document.getElementById('log-search').value||'').toLowerCase();
+  var filtered=LOGS.filter(function(l){return(!tf||l.type===tf)&&(!q||l.user.toLowerCase().includes(q));});
+  var tc={로그인:'b-blue',슬롯생성:'b-ok',슬롯수정:'b-wait',슬롯삭제:'b-err',계정변경:'b-orange'};
+  var tbody=document.getElementById('adm-log-tbody');
+  if(!filtered.length){tbody.innerHTML='<tr><td colspan="5"><div class="empty-state"><i class="ti ti-list-search"></i><p>로그가 없습니다</p></div></td></tr>';return;}
+  tbody.innerHTML=filtered.map(function(l){
+    return '<tr><td style="color:#ccc">'+l.id+'</td><td style="font-weight:600">'+l.user+'</td><td><span class="badge '+(tc[l.type]||'b-gray')+'">'+l.type+'</span></td><td style="color:#555">'+l.msg+'</td><td style="font-size:11px;color:#aaa">'+l.date+'</td></tr>';
+  }).join('');
+}
+
+// ── 어드민 순위 ──
+function renderAdmRank(){
+  var tbody=document.getElementById('adm-rank-tbody');
+  var sb={정상:'b-ok',오류:'b-err',대기:'b-wait',마감예정:'b-gray'};
+  if(!SLOTS.length){tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><i class="ti ti-chart-bar"></i><p>슬롯이 없습니다</p></div></td></tr>';return;}
+  tbody.innerHTML=SLOTS.map(function(s){
+    return '<tr><td style="color:#ccc">'+s.id+'</td><td style="font-weight:600;color:#2563eb">'+s.user+'</td><td style="font-weight:700">'+s.keyword+'</td><td style="font-family:monospace;font-size:11px;color:#888">'+s.mid+'</td><td><span class="badge '+(sb[s.status]||'b-gray')+'">'+s.status+'</span></td><td><button class="btn btn-sm btn-blue" onclick="openRankCompare('+s.id+')"><i class="ti ti-external-link" style="font-size:11px"></i> 키워드+상품 동시 열기</button></td></tr>';
+  }).join('');
+}
+function openAdmRankSearch(){
+  var kw=document.getElementById('adm-rank-kw').value.trim();
+  if(!kw){alert('키워드를 입력해주세요');return;}
+  window.open(NAVER_SEARCH+encodeURIComponent(kw),'_blank');
+}
+
+// ── 설정 ──
+function saveSetting(){
+  SETTING.close=document.getElementById('cfg-close').value||'18:00';
+  SETTING.days=parseInt(document.getElementById('cfg-days').value)||10;
+  SETTING.inflow=parseInt(document.getElementById('cfg-inflow').value)||100;
+  document.getElementById('d-close').textContent=SETTING.close;
+  addLog('khj6546','계정변경','설정 변경 — 마감 '+SETTING.close+' / 기본일수 '+SETTING.days+'일');
+  showToast('설정 저장 완료');
+}
+
+// ── 유틸 ──
+function fmtDate(d){return d.getFullYear()+'.'+(d.getMonth()+1<10?'0':'')+(d.getMonth()+1)+'.'+(d.getDate()<10?'0':'')+d.getDate();}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('open');});});
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}
+</script>
+</body>
+</html>
