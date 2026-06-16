@@ -1,0 +1,14 @@
+{
+  "name": "claude-reward-crawler",
+  "version": "1.0.0",
+  "description": "클로드 리워드 - 네이버 쇼핑 순위 자동 크롤러 (GitHub Actions)",
+  "main": "scripts/crawl.js",
+  "scripts": {
+    "crawl": "node scripts/crawl.js"
+  },
+  "dependencies": {
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "puppeteer": "^22.0.0"
+  }
+}
